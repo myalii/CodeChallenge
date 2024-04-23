@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alii.CodeChallenge.BlogApi", "Alii.CodeChallenge.BlogApi\Alii.CodeChallenge.BlogApi.csproj", "{51E550D4-AC6F-4842-BC53-2F3B99AB564A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Alii.CodeChallenge.BlogApi.Tests", "Alii.CodeChallenge.BlogApi.Tests\Alii.CodeChallenge.BlogApi.Tests.csproj", "{404CB28B-05BB-4D0D-BAD4-57BF3699738A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{51E550D4-AC6F-4842-BC53-2F3B99AB564A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51E550D4-AC6F-4842-BC53-2F3B99AB564A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51E550D4-AC6F-4842-BC53-2F3B99AB564A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51E550D4-AC6F-4842-BC53-2F3B99AB564A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{404CB28B-05BB-4D0D-BAD4-57BF3699738A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{404CB28B-05BB-4D0D-BAD4-57BF3699738A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{404CB28B-05BB-4D0D-BAD4-57BF3699738A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{404CB28B-05BB-4D0D-BAD4-57BF3699738A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
