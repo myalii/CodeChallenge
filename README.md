@@ -31,7 +31,6 @@ The method must satisfy the following requirements:
 - Return a list of PostSummaryDto objects.
 
 ### Task 2: UpdatePostAsync
- 
 Implement the UpdatePostAsync method in the PostService class. This method allows an authenticated user to update an existing post.
 
 The method must satisfy the following requirements:
@@ -42,12 +41,10 @@ The method must satisfy the following requirements:
 ## Evaluation Criteria
  
 Candidates will be evaluated based on the following criteria:
-- Correct usage of Include(), navigation properties, and Where() clauses.
-- Efficient use of IQueryable.
+- Correct and efficient usage of IQueryable, Include(), navigation properties, and Where() clauses.
 - Proper input validation and use of early exits.
 - Code readability and adherence to C# coding conventions.
-- Appropriate implementation of authentication and authorization to ensure that users can only access and modify their own data.
-- Comprehensive error handling and response messaging.
+- Appropriate authorization to ensure that users can only access and modify their own data.
 
 Candidates are encouraged to demonstrate best practices in their code and to provide clear and maintainable solutions.
 
