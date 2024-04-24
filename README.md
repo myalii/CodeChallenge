@@ -1,6 +1,11 @@
 # Alii Code Challenge
 Welcome to the Alii Code Challenge! This challenge is designed for new developer candidates to demonstrate their coding skills, problem-solving abilities, and familiarity with ASP.NET Core and Entity Framework Core.
 
+## Time Consideration
+We understand that coding tests can be time-consuming, and we want to acknowledge that your time is precious. That's why we've set a two-hour limit for this challenge. It's not about adding pressure - it's to ensure that you're not spending too much of your day on this. We value your commitment and would rather you use your time for the things that matter to you.
+
+If you don't complete the challenge, it's absolutely fine - just send us what you've accomplished. And if you have any quick thoughts on potential improvements or features, feel free to include them. This is entirely optional and just gives us a glimpse into your future vision for the project.
+
 ## Project Description
 This coding challenge is centered around an established and functional .NET 8 minimal web API project. The platform in question is a blogging system, where the primary functionalities revolve around creating and managing blogs, posts, and user interactions. As a candidate, your role involves enhancing and adding new features to the existing codebase, not creating it from scratch.
 
@@ -35,9 +40,10 @@ Implement the UpdatePostAsync method in the PostService class. This method allow
 
 The method must satisfy the following requirements:
 - Perform necessary validation checks.
-- Use a reputable library like Microsoft.Security.Application to sanitize fields to prevent XSS attacks.
 - Update only the Title and Content of the post.
 - Return the updated PostDto object.
+- Create a 'happy path' unit test to verify that the method behaves correctly under expected conditions.
+- Create an additional unit test to cover a specific edge case or error condition, such as invalid input or an unauthorized access attempt.
 
 ## Evaluation Criteria
  
