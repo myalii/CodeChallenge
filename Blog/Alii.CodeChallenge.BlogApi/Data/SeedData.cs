@@ -1,30 +1,36 @@
 using Alii.CodeChallenge.BlogApi.Data.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace Alii.CodeChallenge.BlogApi.Data;
 
 public static class SeedData
 {
-    public static void Initialize(BlogContext context)
+    public static void Initialize(BlogContext context, PasswordHasher<User> passwordHasher)
     {
         context.Database.EnsureCreated();
 
-        // Check if the database is already seeded  
+        // Check if the database is already seeded
         if (context.Users.Any())
         {
             return;
         }
 
-        // Seed users  
+        // Seed users, passwords will be hashed
         var users = new[]
         {
-            new User { Name = "Alice" },
-            new User { Name = "Bob" },
-            new User { Name = "Charlie" }
+            new User { Name = "Alice", PasswordHash = "AlicePassword" },
+            new User { Name = "Bob", PasswordHash = "BobPassword" },
+            new User { Name = "Charlie", PasswordHash = "CharliePassword" }
         };
+
+        foreach (var user in users)
+        {
+            user.PasswordHash = passwordHasher.HashPassword(user, user.PasswordHash);
+        }
 
         context.Users.AddRange(users);
 
-        // Seed blogs  
+        // Seed blogs
         var blogs = new[]
         {
             new Blog { Name = "Alice's Blog", User = users[0] },
@@ -33,7 +39,7 @@ public static class SeedData
 
         context.Blogs.AddRange(blogs);
 
-        // Seed posts  
+        // Seed posts
         var posts = new[]
         {
             new Post { Title = "First Post", Content = "Hello World!", Blog = blogs[0] },
@@ -42,7 +48,7 @@ public static class SeedData
 
         context.Posts.AddRange(posts);
 
-        // Seed comments  
+        // Seed comments
         var comments = new[]
         {
             new Comment { Author = "Dave", Content = "Nice post!", Post = posts[0] },
@@ -51,7 +57,7 @@ public static class SeedData
 
         context.Comments.AddRange(comments);
 
-        // Save changes to the database  
+        // Save changes to the database
         context.SaveChanges();
     }
 }

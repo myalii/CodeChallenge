@@ -1,3 +1,6 @@
+using Alii.CodeChallenge.BlogApi.Data.Models;
+using Microsoft.AspNetCore.Identity;
+
 namespace Alii.CodeChallenge.BlogApi.Data;
 
 public static class SeedDataExtension
@@ -8,8 +11,9 @@ public static class SeedDataExtension
         {
             var services = scope.ServiceProvider;
             var context = services.GetRequiredService<BlogContext>();
-            
-            SeedData.Initialize(context);
+            var passwordHasher = services.GetRequiredService<PasswordHasher<User>>();
+
+            SeedData.Initialize(context, passwordHasher);
         }
     }
 }

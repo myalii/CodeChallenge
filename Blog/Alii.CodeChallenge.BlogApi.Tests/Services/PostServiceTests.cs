@@ -5,22 +5,20 @@ using Alii.CodeChallenge.BlogApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Moq.EntityFrameworkCore;
 
 namespace Alii.CodeChallenge.BlogApi.Tests.Services;
 
-public class PostSummaryServiceTests
+public class PostServiceTests
 {
-    private DbContextOptions<BlogContext> _options;
+    private readonly DbContextOptions<BlogContext> _options;
 
-    public PostSummaryServiceTests()
+    public PostServiceTests()
     {
         // Configure the in-memory database
         _options = new DbContextOptionsBuilder<BlogContext>()
             .UseInMemoryDatabase(databaseName: $"BlogContextTestDatabase_{Guid.NewGuid()}")
             .Options;
 
-        // Seed the database
         SeedDatabase();
     }
 
@@ -35,9 +33,9 @@ public class PostSummaryServiceTests
             new() { PostId = 3, Title = "Test Post 3", CommentCount = 1 }
         };
 
-        var mockLogger = new Mock<ILogger<PostSummaryService>>();
+        var mockLogger = new Mock<ILogger<PostService>>();
         using var blogContext = new BlogContext(_options);
-        var postSummaryService = new PostSummaryService(mockLogger.Object, blogContext);
+        var postSummaryService = new PostService(mockLogger.Object, blogContext);
 
         // Act  
         var actualSummaries = await postSummaryService.GetPostsSummaryForUserAsync(userId);
@@ -57,7 +55,7 @@ public class PostSummaryServiceTests
     private void SeedDatabase()
     {
         using var context = new BlogContext(_options);
-        var user = new User { UserId = 1, Name = "Test User" };
+        var user = new User { UserId = 1, Name = "Test User", PasswordHash = "Test Password"};
         var blog = new Blog { BlogId = 1, Name = "Test Blog", UserId = user.UserId };
         user.Blogs = [blog];
 
