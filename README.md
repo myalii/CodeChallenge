@@ -35,6 +35,7 @@ Implement the UpdatePostAsync method in the PostService class. This method allow
 
 The method must satisfy the following requirements:
 - Perform necessary validation checks.
+- Use a reputable library like Microsoft.Security.Application to sanitize fields to prevent XSS attacks.
 - Update only the Title and Content of the post.
 - Return the updated PostDto object.
 
