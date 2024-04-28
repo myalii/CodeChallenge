@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Alii.CodeChallenge.BlogApi.Dto;
 using Alii.CodeChallenge.BlogApi.Extensions;
 using Alii.CodeChallenge.BlogApi.Services;
+using Alii.CodeChallenge.BlogApi.Utilities;
 
 namespace Alii.CodeChallenge.BlogApi.Endpoints;
 
@@ -32,16 +33,21 @@ public static class PostEndpoints
         // Get posts summary for a user
         group.MapGet("/user/{userId:int}", async (int userId, PostService postService) =>
         {
-            try
+            var result = await postService.GetPostsSummaryForUserAsync(userId);
+
+            if (!result.IsSuccess)
             {
-                var summaries = await postService.GetPostsSummaryForUserAsync(userId);
-                return Results.Ok(summaries);
+                return result.ErrorType switch
+                {
+                    ResultTypeEnum.ArgumentValidationError => Results.BadRequest(result.Message),
+                    ResultTypeEnum.InternalServerError => Results.Problem(result.Message),
+                    _ => Results.Problem("An unexpected error occurred.")
+                };
             }
-            catch (Exception ex)
-            {
-                return Results.Problem(ex.Message);
-            }
+
+            return Results.Ok(result.Data);
         });
+
 
         // Create a post
         group.MapPost("/", async (PostService postService, PostCreateDto postCreateDto, ClaimsPrincipal user) =>

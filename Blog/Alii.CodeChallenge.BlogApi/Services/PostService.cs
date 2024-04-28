@@ -2,6 +2,7 @@ using Alii.CodeChallenge.BlogApi.Data;
 using Alii.CodeChallenge.BlogApi.Data.Models;
 using Alii.CodeChallenge.BlogApi.Dto;
 using Microsoft.EntityFrameworkCore;
+using Alii.CodeChallenge.BlogApi.Utilities;
 
 namespace Alii.CodeChallenge.BlogApi.Services;
 
@@ -38,12 +39,11 @@ public class PostService(ILogger<PostService> logger, BlogContext blogContext)
             throw new InvalidOperationException("Blog not found, or user is not authorized to create posts in this blog.");
         }
 
-        var post = new Post
+        var post = new Post(postCreateDto.Title, postCreateDto.Content)
         {
-            BlogId = postCreateDto.BlogId,
-            Title = postCreateDto.Title,
-            Content = postCreateDto.Content
+            BlogId = postCreateDto.BlogId
         };
+
 
         blogContext.Posts.Add(post);
         await blogContext.SaveChangesAsync();
@@ -56,14 +56,53 @@ public class PostService(ILogger<PostService> logger, BlogContext blogContext)
         };
     }
 
-    public async Task<List<PostSummaryDto>> GetPostsSummaryForUserAsync(int userId)
+    public async Task<Result<List<PostSummaryDto>>> GetPostsSummaryForUserAsync(int userId)
     {
-        // TODO: Implement this method
-        logger.LogError("GetPostsSummaryForUserAsync is not implemented");
-        throw new NotImplementedException();
+        if (userId <= 0)
+        {
+            return new Result<List<PostSummaryDto>>
+            {
+                IsSuccess = false,
+                Message = "Invalid user ID provided.",
+                ErrorType = ResultTypeEnum.ArgumentValidationError
+            };
+        }
+
+        try
+        {
+            var postSummaries = await blogContext.Posts
+                .Include(p => p.Blog)
+                .Include(p => p.Comments)
+                .Where(post => post.Blog.UserId == userId && post.Comments.Any())
+                .Select(post => new PostSummaryDto
+                {
+                    PostId = post.PostId,
+                    Title = post.Title,
+                    CommentCount = post.Comments.Count
+                })
+                .ToListAsync();
+
+            logger.LogInformation("Successfully retrieved {Count} post summaries for user ID {UserId}", postSummaries.Count, userId);
+
+            return new Result<List<PostSummaryDto>>
+            {
+                IsSuccess = true,
+                Data = postSummaries
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An error occurred while retrieving post summaries for user ID {UserId}", userId);
+            return new Result<List<PostSummaryDto>>
+            {
+                IsSuccess = false,
+                Message = "An error occurred while retrieving post summaries.",
+                ErrorType = ResultTypeEnum.InternalServerError
+            };
+        }
     }
 
-    public async Task<Post> UpdatePostAsync(int userId, int postId, PostEditDto postEditDto)
+    public async Task<Result<PostDto>> UpdatePostAsync(int userId, int postId, PostEditDto postEditDto)
     {
         // TODO: Implement this method  
         logger.LogError("UpdatePostAsync is not implemented");
