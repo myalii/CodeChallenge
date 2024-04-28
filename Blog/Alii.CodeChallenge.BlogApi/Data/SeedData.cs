@@ -42,8 +42,8 @@ public static class SeedData
         // Seed posts
         var posts = new[]
         {
-            new Post { Title = "First Post", Content = "Hello World!", Blog = blogs[0] },
-            new Post { Title = "Second Post", Content = "The quick brown fox...", Blog = blogs[1] }
+            new Post("First Post", "Hello World!") { Blog = blogs[0] },
+            new Post("Second Post", "The quick brown fox...") { Blog = blogs[1] }
         };
 
         context.Posts.AddRange(posts);
