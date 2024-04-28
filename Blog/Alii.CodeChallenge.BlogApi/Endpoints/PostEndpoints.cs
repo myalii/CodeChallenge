@@ -82,19 +82,21 @@ public static class PostEndpoints
                 return Results.Unauthorized();
             }
 
-            try
+            var result = await postService.UpdatePostAsync(userId.Value, postId, postEditDto);
+            if (result.IsSuccess)
             {
-                var updatedPost = await postService.UpdatePostAsync(userId.Value, postId, postEditDto);
-                return Results.Ok(updatedPost);
+                return Results.Ok(result.Data);
             }
-            catch (InvalidOperationException ex)
+
+            return result.ErrorType switch
             {
-                return Results.NotFound(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return Results.Problem(ex.Message);
-            }
+                ResultTypeEnum.UnauthorizedError => Results.Unauthorized(),
+                ResultTypeEnum.ArgumentValidationError => Results.BadRequest(result.Message),
+                ResultTypeEnum.NotFoundError => Results.BadRequest(result.Message),
+                ResultTypeEnum.ConflictError => Results.Conflict(result.Message),
+                ResultTypeEnum.InternalServerError => Results.Problem(result.Message),
+                _ => Results.Problem(result.Message)
+            };
         }).RequireAuthorization();
     }
 }

@@ -104,8 +104,72 @@ public class PostService(ILogger<PostService> logger, BlogContext blogContext)
 
     public async Task<Result<PostDto>> UpdatePostAsync(int userId, int postId, PostEditDto postEditDto)
     {
-        // TODO: Implement this method  
-        logger.LogError("UpdatePostAsync is not implemented");
-        throw new NotImplementedException();
+        if (postEditDto == null)
+        {
+            return new Result<PostDto>
+            {
+                IsSuccess = false,
+                Message = "Post data must not be null",
+                ErrorType = ResultTypeEnum.ArgumentValidationError
+            };
+        }
+
+        var post = await blogContext.Posts.Include(p => p.Blog).FirstOrDefaultAsync(p => p.PostId == postId);
+        if (post == null)
+        {
+            return new Result<PostDto>
+            {
+                IsSuccess = false,
+                Message = "Post not found",
+                ErrorType = ResultTypeEnum.NotFoundError
+            };
+        }
+
+        if (post.Blog.UserId != userId)
+        {
+            return new Result<PostDto>
+            {
+                IsSuccess = false,
+                Message = "Unauthorized access",
+                ErrorType = ResultTypeEnum.UnauthorizedError
+            };
+        }
+
+        post.Title = postEditDto.Title;
+        post.Content = postEditDto.Content;
+
+
+        try
+        {
+            await blogContext.SaveChangesAsync();
+
+            logger.LogInformation("Successfully updated post ID {PostId} for user ID {UserId}", postId, userId);
+
+            return new Result<PostDto>
+            {
+                IsSuccess = true,
+                Data = new PostDto(post)
+            };
+        }
+        catch (DbUpdateConcurrencyException ex)
+        {
+            logger.LogError(ex, "Concurrency error while updating post ID {PostId} for user ID {UserId}", postId, userId);
+            return new Result<PostDto>
+            {
+                IsSuccess = false,
+                Message = "Post update conflict detected.",
+                ErrorType = ResultTypeEnum.ConflictError
+            };
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "An unexpected error occurred while updating post ID {PostId} for user ID {UserId}", postId, userId);
+            return new Result<PostDto>
+            {
+                IsSuccess = false,
+                Message = "An error occurred while updating a post.",
+                ErrorType = ResultTypeEnum.InternalServerError
+            };
+        }
     }
 }
