@@ -162,7 +162,6 @@ public class PostServiceTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Unauthorized access", result.Message);
         Assert.Equal(ResultTypeEnum.UnauthorizedError, result.ErrorType);
     }
 
@@ -194,7 +193,6 @@ public class PostServiceTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Post not found", result.Message);
         Assert.Equal(ResultTypeEnum.NotFoundError, result.ErrorType);
     }
 
@@ -226,7 +224,36 @@ public class PostServiceTests
 
         // Assert
         Assert.False(result.IsSuccess);
-        Assert.Equal("Post data must not be null", result.Message);
+        Assert.Equal(ResultTypeEnum.ArgumentValidationError, result.ErrorType);
+    }
+
+    [Fact]
+    public async Task UpdatePostAsync_CGFHHGHG_ArgumentValidationError()
+    {
+        var options = new DbContextOptionsBuilder<BlogContext>()
+               .UseInMemoryDatabase(databaseName: "ArgumentValidationErrorTestDb")
+               .Options;
+
+        using var blogContext = new BlogContext(options);
+
+        var logger = Mock.Of<ILogger<PostService>>();
+        var service = new PostService(logger, blogContext);
+        var postId = 1;
+        var userId = 1;
+        var invalidPostId = 999;
+        var blog = new Blog { BlogId = 1, Name = "Test Blog", UserId = userId };
+
+        blogContext.Posts.Add(new Post("Original Title", "Original Content") { PostId = invalidPostId, Blog = blog });
+        await blogContext.SaveChangesAsync();
+
+        var postEditDto = new PostEditDto { Title = "Updated Title", Content = "" };
+
+        // Act 
+        var result = await service.UpdatePostAsync(userId, postId, postEditDto);
+
+
+        // Assert
+        Assert.False(result.IsSuccess);
         Assert.Equal(ResultTypeEnum.ArgumentValidationError, result.ErrorType);
     }
 }

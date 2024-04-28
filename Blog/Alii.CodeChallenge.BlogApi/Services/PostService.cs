@@ -114,6 +114,16 @@ public class PostService(ILogger<PostService> logger, BlogContext blogContext)
             };
         }
 
+        if (string.IsNullOrEmpty(postEditDto.Title) || string.IsNullOrEmpty(postEditDto.Content))
+        {
+            return new Result<PostDto>
+            {
+                IsSuccess = false,
+                Message = "Post must have both Title and Content",
+                ErrorType = ResultTypeEnum.ArgumentValidationError
+            };
+        }
+
         var post = await blogContext.Posts.Include(p => p.Blog).FirstOrDefaultAsync(p => p.PostId == postId);
         if (post == null)
         {
